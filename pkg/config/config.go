@@ -24,6 +24,9 @@ type Mongo struct {
 
 var AppConfig = Config{}
 
+var ServerConfig = &AppConfig.Server
+var MongoConfig = &AppConfig.Mongo
+
 func Setup() {
 	yamlFile, err := ioutil.ReadFile("config/environment.dev.yaml")
 	if err != nil {

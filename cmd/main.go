@@ -13,7 +13,7 @@ func init() {
 }
 
 func main() {
-	gin.SetMode(config.AppConfig.Server.Mode)
+	gin.SetMode(config.ServerConfig.Mode)
 	r := routers.InitRouter()
-	r.Run(":" + config.AppConfig.Server.Port)
+	r.Run(":" + config.ServerConfig.Port)
 }
