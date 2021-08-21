@@ -2,4 +2,4 @@
 .vscode/
 .DS_Store
 
-env/dev.go
+config/environment.*

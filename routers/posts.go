@@ -5,12 +5,12 @@ import (
 	"github.com/teytattze/learn-go-gin/controllers"
 )
 
-func PostsRouter(r *gin.RouterGroup) {
-	router := r.Group("/posts")
+func PostsRouter(api *gin.RouterGroup) {
+	r := api.Group("/posts")
 
-	router.GET("", controllers.GetAllPosts)
-	router.GET("/:id", controllers.GetPostById)
-	router.POST("/")
-	router.PATCH("/:id")
-	router.DELETE("/:id")
+	r.GET("", controllers.GetAllPosts)
+	r.GET("/:id", controllers.GetPostById)
+	r.POST("/")
+	r.PATCH("/:id")
+	r.DELETE("/:id")
 }
