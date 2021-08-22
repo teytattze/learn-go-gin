@@ -2,9 +2,9 @@ package ex
 
 import "github.com/teytattze/learn-go-gin/pkg/status"
 
-const internalServerStatus = status.BAD_REQUEST
+const internalServerStatus = status.INTERNAL_SERVER_ERROR
 
-func InternalServerException(errorCode string, message string) (int, Error) {
+func InternalServer(errorCode string, message string) (int, Error) {
 	err := Error{Status: internalServerStatus, ErrorCode: errorCode, Message: message}
-	return badRequestStatus, err
+	return internalServerStatus, err
 }

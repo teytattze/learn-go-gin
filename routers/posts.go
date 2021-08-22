@@ -10,7 +10,7 @@ func PostsRouter(api *gin.RouterGroup) {
 
 	r.GET("", controllers.GetAllPosts)
 	r.GET("/:id", controllers.GetPostById)
-	r.POST("/")
-	r.PATCH("/:id")
+	r.POST("/", controllers.CreatePost)
+	r.PATCH("/:id", controllers.UpdatePost)
 	r.DELETE("/:id")
 }

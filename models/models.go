@@ -11,25 +11,31 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var client *mongo.Client
+const (
+	ACCOUNTS = "accounts"
+	POSTS    = "posts"
+)
 
-// Initialize databases connection
+var ctx context.Context
+var db *mongo.Database
+
 func Setup() {
+	// Initialize MongoDb connection
 	mongoConfig := config.MongoConfig
-	mongoUri := "mongodb+srv://" + mongoConfig.Username + ":" + mongoConfig.Password + mongoConfig.Uri
+	mongoUri := "mongodb+srv://" + mongoConfig.Username + ":" + mongoConfig.Password + mongoConfig.Uri + mongoConfig.Database + "?retryWrites=true&w=majority"
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(mongoUri))
 	if err != nil {
 		panic("Error...while creating mongo instance...")
 	}
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	err = client.Connect(ctx)
 	if err != nil {
 		panic("Error...while connecting to mongo databases...")
 	}
-	defer client.Disconnect(ctx)
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
@@ -37,4 +43,6 @@ func Setup() {
 	}
 
 	fmt.Println("Connected to MongoDB successfully!")
+
+	db = client.Database(mongoConfig.Database)
 }

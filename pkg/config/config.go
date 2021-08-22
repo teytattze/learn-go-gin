@@ -20,6 +20,7 @@ type Mongo struct {
 	Username string
 	Password string
 	Uri      string
+	Database string
 }
 
 var AppConfig = Config{}

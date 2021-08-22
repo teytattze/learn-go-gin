@@ -6,7 +6,7 @@ type Error struct {
 	Message   string `json:"message"`
 }
 
-func HttpException(status int, errorCode string, message string) (int, Error) {
+func Http(status int, errorCode string, message string) (int, Error) {
 	err := Error{Status: status, ErrorCode: errorCode, Message: message}
 	return status, err
 }

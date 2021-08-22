@@ -1,27 +1,68 @@
 package models
 
+import (
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
 type Post struct {
-	Id      int    `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Author  string `json:"author"`
+	Id      primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Title   string             `json:"title,omitempty" bson:"title,omitempty"`
+	Content string             `json:"content,omitempty" bson:"content,omitempty"`
+	Author  string             `json:"author,omitempty" bson:"author,omitempty"`
 }
 
-var postsData = []Post{
-	{Id: 1, Title: "Post Title 1", Content: "Content 1", Author: "Tey"},
-	{Id: 2, Title: "Post Title 2", Content: "Content 2", Author: "Tey"},
-	{Id: 3, Title: "Post Title 3", Content: "Content 3", Author: "Tey"},
-}
-
-func GetAllPosts() []Post {
-	return postsData
-}
-
-func GetPostById(id int) Post {
-	for _, v := range postsData {
-		if id == v.Id {
-			return v
-		}
+func GetAllPosts() ([]Post, error) {
+	cursor, err := db.Collection(POSTS).Find(ctx, bson.M{})
+	if err != nil {
+		return []Post{}, err
 	}
-	return Post{}
+	defer cursor.Close(ctx)
+
+	var posts []Post
+	for cursor.Next(ctx) {
+		var post Post
+		if err = cursor.Decode(&post); err != nil {
+			return []Post{}, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func GetPostById(id primitive.ObjectID) (Post, error) {
+	result := db.Collection(POSTS).FindOne(ctx, bson.M{"_id": id})
+
+	if err := result.Err(); err != nil {
+		return Post{}, err
+	}
+
+	var post Post
+	if err := result.Decode(&post); err != nil {
+		return Post{}, err
+	}
+
+	return post, nil
+}
+
+func CreatePost(postData interface{}) (*mongo.InsertOneResult, error) {
+	result, err := db.Collection(POSTS).InsertOne(ctx, postData)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func UpdatePost(id primitive.ObjectID, postData interface{}) (*mongo.UpdateResult, error) {
+	filter := bson.M{"_id": id}
+	update := bson.M{"$set": postData}
+
+	result, err := db.Collection(POSTS).UpdateOne(ctx, filter, update)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, err
 }
