@@ -12,5 +12,5 @@ func PostsRouter(api *gin.RouterGroup) {
 	r.GET("/:id", controllers.GetPostById)
 	r.POST("/", controllers.CreatePost)
 	r.PATCH("/:id", controllers.UpdatePost)
-	r.DELETE("/:id")
+	r.DELETE("/:id", controllers.DeletePost)
 }

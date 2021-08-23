@@ -64,5 +64,16 @@ func UpdatePost(id primitive.ObjectID, postData interface{}) (*mongo.UpdateResul
 		return nil, err
 	}
 
-	return result, err
+	return result, nil
+}
+
+func DeletePost(id primitive.ObjectID) (*mongo.DeleteResult, error) {
+	filter := bson.M{"_id": id}
+
+	result, err := db.Collection(POSTS).DeleteOne(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

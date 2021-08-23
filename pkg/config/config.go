@@ -23,7 +23,7 @@ type Mongo struct {
 	Database string
 }
 
-var AppConfig = Config{}
+var AppConfig = &Config{}
 
 var ServerConfig = &AppConfig.Server
 var MongoConfig = &AppConfig.Mongo

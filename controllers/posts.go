@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Handler to get all posts
 func GetAllPosts(c *gin.Context) {
 	posts, err := models.GetAllPosts()
 	if err != nil {
@@ -19,6 +20,7 @@ func GetAllPosts(c *gin.Context) {
 	c.JSON(status.SUCCESS, posts)
 }
 
+// Hanlder to get post by id
 func GetPostById(c *gin.Context) {
 	id, err := primitive.ObjectIDFromHex(c.Param("id"))
 
@@ -51,8 +53,9 @@ type CreatePostResult struct {
 	Id interface{} `json:"_id"`
 }
 
+// Handler to create a new post
 func CreatePost(c *gin.Context) {
-	var postData CreatePostDto
+	var postData *CreatePostDto
 	if err := c.ShouldBindJSON(&postData); err != nil {
 		c.AbortWithStatusJSON(ex.BadRequest("", "Bad Request"))
 		return
@@ -64,7 +67,7 @@ func CreatePost(c *gin.Context) {
 		return
 	}
 
-	postResult := CreatePostResult{Id: post.InsertedID}
+	postResult := &CreatePostResult{Id: post.InsertedID}
 
 	c.JSON(status.SUCCESS, postResult)
 }
@@ -75,7 +78,7 @@ type UpdatePostDto struct {
 	Author  string `form:"author" bson:",omitempty"`
 }
 
-// TODO: Add fancy response message
+// Handler to update single post
 func UpdatePost(c *gin.Context) {
 	id, err := primitive.ObjectIDFromHex(c.Param("id"))
 	if err != nil {
@@ -83,17 +86,38 @@ func UpdatePost(c *gin.Context) {
 		return
 	}
 
-	var postData UpdatePostDto
+	var postData *UpdatePostDto
 	if err = c.ShouldBindJSON(&postData); err != nil {
 		c.AbortWithStatusJSON(ex.BadRequest("", ""))
 		return
 	}
 
-	post, err := models.UpdatePost(id, postData)
+	_, err = models.UpdatePost(id, postData)
 	if err != nil {
 		c.AbortWithStatusJSON(ex.BadRequest("", ""))
 		return
 	}
 
-	c.JSON(status.SUCCESS, post)
+	c.JSON(status.SUCCESS, map[string]interface{}{
+		"status": status.SUCCESS, "message": "Update successfully", "_id": id.Hex(),
+	})
+}
+
+// Handler to delete single post
+func DeletePost(c *gin.Context) {
+	id, err := primitive.ObjectIDFromHex(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(ex.BadRequest("", ""))
+		return
+	}
+
+	_, err = models.DeletePost(id)
+	if err != nil {
+		c.AbortWithStatusJSON(ex.BadRequest("", ""))
+		return
+	}
+
+	c.JSON(status.SUCCESS, map[string]interface{}{
+		"status": status.SUCCESS, "message": "Deleted successfully", "_id": id.Hex(),
+	})
 }
