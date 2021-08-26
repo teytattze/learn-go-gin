@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/teytattze/learn-go-gin/models"
+	"github.com/teytattze/learn-go-gin/db"
 	"github.com/teytattze/learn-go-gin/pkg/config"
 	"github.com/teytattze/learn-go-gin/routers"
 )
 
 func init() {
 	config.Setup()
-	models.Setup()
+	db.Setup()
 }
 
 func main() {

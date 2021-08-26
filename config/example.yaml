@@ -1,4 +1,9 @@
+server:
+  mode: ""
+  port: ""
+
 mongo: 
-  username: 
-  password: 
-  uri: 
+  username: ""
+  password: ""
+  uri: ""
+  database: ""

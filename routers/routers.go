@@ -17,6 +17,8 @@ func InitRouter() *gin.Engine {
 
 	api := r.Group("/api")
 
+	AuthenticationRouter(api)
+	UserRouter(api)
 	PostsRouter(api)
 
 	return r

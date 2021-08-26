@@ -1,4 +1,4 @@
-package models
+package db
 
 import (
 	"context"
@@ -11,13 +11,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const (
-	ACCOUNTS = "accounts"
-	POSTS    = "posts"
-)
+type Mongo struct {
+	Ctx    context.Context
+	Client *mongo.Client
+}
 
-var ctx context.Context
-var db *mongo.Database
+func (m *Mongo) Select(db string, c string) *mongo.Collection {
+	return m.Client.Database(db).Collection(c)
+}
+
+var MI *Mongo
 
 func Setup() {
 	// Initialize MongoDb connection
@@ -44,5 +47,8 @@ func Setup() {
 
 	fmt.Println("Connected to MongoDB successfully!")
 
-	db = client.Database(mongoConfig.Database)
+	MI = &Mongo{
+		Ctx:    ctx,
+		Client: client,
+	}
 }

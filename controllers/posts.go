@@ -31,7 +31,7 @@ func GetPostById(c *gin.Context) {
 
 	post, err := models.GetPostById(id)
 	if err != nil {
-		c.AbortWithStatusJSON(ex.InternalServer("", ""))
+		c.AbortWithStatusJSON(ex.NotFound("", ""))
 		return
 	}
 
@@ -50,7 +50,7 @@ type CreatePostDto struct {
 }
 
 type CreatePostResult struct {
-	Id interface{} `json:"_id"`
+	Id interface{} `json:"id"`
 }
 
 // Handler to create a new post
